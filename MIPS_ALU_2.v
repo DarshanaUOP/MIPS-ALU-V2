@@ -51,6 +51,7 @@ module tb_MIPSALU2();
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
+	#100	RESET	= 1;
 end
 
 always begin
