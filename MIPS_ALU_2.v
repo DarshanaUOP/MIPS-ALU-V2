@@ -40,6 +40,12 @@ always @ (posedge CLK)	begin
 end
 endmodule
 
+module INSTRUCTION_MEMORY(PC_out,INSTRUCTION);
+	input 		[31:0]	PC_out;
+	output	reg	[31:0]	INSTRUCTION;
+	reg	[7:0]	MemReg	[0:31];
+endmodule
+
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	0;
