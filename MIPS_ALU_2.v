@@ -6,6 +6,7 @@ module PC(PC_in,PC_out,RESET,CLK);
 	input		RESET,CLK;
 
 	reg		[31:0]	PC_val;
+	//reg		[31:0]	PC_out;
 
 always @ (posedge RESET)	begin
 	PC_val	=	32'h0;
@@ -20,8 +21,8 @@ endmodule
 
 //program counter adder
 module PC_ADDER(PC_in,PC_out,CLK);
-	input	[31:0]	PC_out;
-	output 	reg [31:0]	PC_in;
+	input		[31:0]	PC_out;
+	output 	reg 	[31:0]	PC_in;
 	input	CLK;
 always @ (negedge CLK)	begin
 	PC_in	= PC_out + 4;	
