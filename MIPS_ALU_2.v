@@ -43,8 +43,10 @@ endmodule
 module INSTRUCTION_MEMORY(PC_out,INSTRUCTION);
 	input 		[31:0]	PC_out;
 	output	reg	[31:0]	INSTRUCTION;
-	reg	[7:0]	memReg[15:0];
+	reg	[7:0]	memReg[1023:0];
 
+initial begin
+	INSTRUCTION	=	32'h0;
 /*
 	register0 + register1 => register0 ;
 	op	:ADD 		-	000010
@@ -57,12 +59,42 @@ module INSTRUCTION_MEMORY(PC_out,INSTRUCTION);
 	therefore::::
 	the INSTRUCTION		-	|000010 00|000 00001 |00000 000|00 000000
 */
-
-initial begin
+	//ADD
 	memReg[0] = 8'h8;// 8'b00001000;
 	memReg[1] = 8'b00000001;
 	memReg[2] = 8'b00000000;
 	memReg[3] = 8'b00000000;
+	
+	//AND	
+	memReg[4] = 8'b00000000;
+	memReg[5] = 8'b00000001;
+	memReg[6] = 8'b00000000;
+	memReg[7] = 8'b00000000;
+	
+	//OR	
+	memReg[8] = 8'b00000100;
+	memReg[9] = 8'b00000011;
+	memReg[10] = 8'b00000000;
+	memReg[11] = 8'b00000000;
+	
+	//SUB	
+	memReg[12] = 8'b00011000;
+	memReg[13] = 8'b00000001;
+	memReg[14] = 8'b00000000;
+	memReg[15] = 8'b00000000;
+	
+	//SLT	
+	memReg[16] = 8'b00011100;
+	memReg[17] = 8'b00000001;
+	memReg[18] = 8'b00000000;
+	memReg[19] = 8'b00000000;
+	
+	//NOR	
+	memReg[20] = 8'b00110000;
+	memReg[21] = 8'b00000001;
+	memReg[22] = 8'b00000000;
+	memReg[23] = 8'b00000000;
+	
 end
 	always @ (PC_out) begin
 		//memReg[PC_out] = memReg[PC_out] + 8'h1;
@@ -86,7 +118,8 @@ module tb_MIPSALU2();
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
-	#100	RESET	= 1;
+	#30	RESET	= 1;
+	#5	RESET	= 0;
 end
 
 always begin
