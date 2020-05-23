@@ -5,21 +5,19 @@ module PC(PC_in,PC_out,RESET,CLK);
 	output	reg	[31:0]	PC_out;
 	input		RESET,CLK;
 
-	reg		[31:0]	PC_val;
+	//reg		[31:0]	PC_val;
 	//reg		[31:0]	PC_out;
 initial begin
-	PC_val 	= 32'h0;
+	PC_out 	= 32'h0;
 end
 
 always @ (posedge RESET)	begin
-	PC_val	=	32'h0;
+	PC_out	=	32'h0;
 end
-always @ (posedge CLK)	begin
-	PC_val	<=	PC_in;
-end
+
 always @ (negedge CLK) begin
-	
-	PC_out	<= PC_val;
+	//PC_val	<=	PC_in;
+	PC_out	= PC_in;
 end
 endmodule
 
@@ -28,7 +26,16 @@ module PC_ADDER(PC_in,PC_out,CLK);
 	input		[31:0]	PC_out;
 	output 	reg 	[31:0]	PC_in;
 	input	CLK;
-always @ (negedge CLK)	begin
+	reg	[31:0]	PC_next;
+/*
+always @ (posedge CLK) begin
+	PC_next = PC_out + 4;
+end
+*/
+initial begin
+	PC_in = 32'h0;
+end
+always @ (posedge CLK)	begin
 	PC_in	= PC_out + 4;	
 end
 endmodule
@@ -37,12 +44,13 @@ endmodule
 module tb_MIPSALU2();
 	reg	CLK	=	0;
 	wire	[31:0]	PC_in,PC_out;
-	wire	RESET;
+	reg	RESET;
 	
 	PC		PC0	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER	PA	(PC_in,PC_out,CLK);
 initial begin
 	//PC_in = 32'h0;
+	RESET	= 0;
 end
 
 always begin
