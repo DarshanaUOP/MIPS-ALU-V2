@@ -128,6 +128,7 @@ always @ (posedge	CLK) begin
 end
 endmodule
 
+//Register file
 module REGISTERS(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
 	input		[4:0]	ReadReg1,ReadReg2,WriteReg;
 	input			CLK,RegWrite;
@@ -182,6 +183,27 @@ end
 
 endmodule
 
+//ALUCONTROLER
+module ALUControl(ALUOp,FuncCode,ALUCtl);
+	input		[1:0]	ALUOp;
+	input		[5:0]	FuncCode;
+	output	reg	[3:0]	ALUCtl;
+	reg		[1:0]	ALUOpNext;
+
+	always @ (FuncCode)	begin
+	case(FuncCode)
+		32: ALUOpNext <= 2;		// ADD
+		34: ALUOpNext <= 6;		// SUBSTRACT
+		36: ALUOpNext <= 0;		// AND
+		37: ALUOpNext <= 1;		// OR
+		39: ALUOpNext <= 12;		// NOR
+		42: ALUOpNext <= 7;		// SLT (Set Less Than)
+		default: ALUOpNext <= 15;	// Not happened
+	endcase
+	end
+	always @(ALUOpNext)	ALUCtl <= ALUOpNext;
+endmodule
+
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	0;
@@ -189,12 +211,15 @@ module tb_MIPSALU2();
 	reg		RESET,RegWrite;
 	wire	[4:0]	ReadReg1,ReadReg2,WriteReg;
 	wire	[5:0]	FuncCode;
+	wire	[1:0]	ALUOp;
+	wire	[3:0]	ALUCtl;
 
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PC_in,PC_out,CLK);
 	INSTRUCTION_MEMORY 	IM	(PC_out,INSTRUCTION);
 	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,FuncCode);
 	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
+	ALUControl		ALUCNTL	(ALUOp,FuncCode,ALUCtl);
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
