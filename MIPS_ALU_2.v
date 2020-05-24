@@ -107,17 +107,19 @@ end
 endmodule
 
 // instruction register
-module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,ALUCtl);
+module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,FuncCode);
 	input	[31:0]	INSTRUCTION;
 	input		CLK;
 	output	reg	[4:0]	ReadReg1,ReadReg2,WriteReg;
+	output	reg	[5:0]	FuncCode;
 	reg	[31:0]	CurrentINS;
+
 always @ (posedge	CLK) begin
 	CurrentINS	<=	INSTRUCTION;
 	ReadReg1	<=	INSTRUCTION[25:21];
 	ReadReg2	<=	INSTRUCTION[20:16];
 	WriteReg	<=	INSTRUCTION[15:11];
-
+	FuncCode	<=	INSTRUCTION[5:0];
 end
 endmodule
 
@@ -135,13 +137,15 @@ endmodule
 module tb_MIPSALU2();
 	reg	CLK	=	0;
 	wire	[31:0]	PC_in,PC_out,INSTRUCTION;
-	reg	RESET;
+	reg	RESET,RegWrite;
 	wire	[4:0]	ReadReg1,ReadReg2,WriteReg;
-	
+	wire	[5:0]	FuncCode;
+
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PC_in,PC_out,CLK);
 	INSTRUCTION_MEMORY 	IM	(PC_out,INSTRUCTION);
-	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg);
+	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,FuncCode);
+	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteDate,RegWrite,CLK,A,B);
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
