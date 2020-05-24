@@ -144,11 +144,10 @@ initial begin
 	A		=	32'h0;
 	B		=	32'h0;
 	
-
-	REGS[0]		=	32'h0;
-	REGS[1]		=	32'h0;
-	REGS[2]		=	32'h0;
-	REGS[3]		=	32'h0;
+	REGS[0]		=	32'h3;
+	REGS[1]		=	32'h4;
+	REGS[2]		=	32'h1;
+	REGS[3]		=	32'h2;
 	REGS[4]		=	32'h0;
 	REGS[5]		=	32'h0;
 	REGS[6]		=	32'h0;
@@ -178,7 +177,7 @@ initial begin
 	REGS[30]	=	32'h0;
 	REGS[31]	=	32'h0;
 end
-always @ (posedge CLK)	begin
+always @ (ReadReg1 or ReadReg2)	begin
 	A	<=	REGS[ReadReg1];
 	B	<=	REGS[ReadReg2];
 
