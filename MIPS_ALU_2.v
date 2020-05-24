@@ -30,11 +30,7 @@ module PC_ADDER(PC_in,PC_out,CLK);
 	output 	reg 	[31:0]	PC_in;
 	input	CLK;
 	reg	[31:0]	PC_next;
-/*
-always @ (posedge CLK) begin
-	PC_next = PC_out + 4;
-end
-*/
+
 initial begin
 	PC_in = 32'h0;
 end
@@ -75,16 +71,16 @@ initial begin
 	memReg[7] = 8'b00100100;
 	
 	//OR	{register6 OR register7 => register8 ;}
-	memReg[8] = 8'b00000100;
-	memReg[9] = 8'b11000111;
-	memReg[10] = 8'b01000000;
-	memReg[11] = 8'b00100101;
+	memReg[12] = 8'b00000101;
+	memReg[13] = 8'b00100111;
+	memReg[14] = 8'b01000000;
+	memReg[15] = 8'b00100101;
 	
 	//SUB	{register9 - register10 => register11} ;
-	memReg[12] = 8'b00011001;
-	memReg[13] = 8'b10001001;
-	memReg[14] = 8'b01011000;
-	memReg[15] = 8'b00100010;
+	memReg[8] = 8'b00011001;
+	memReg[9] = 8'b00101010;
+	memReg[10] = 8'b01011000;
+	memReg[11] = 8'b00100010;
 	
 	//SLT	register12 < register13 ?=> register14 ;
 	memReg[16] = 8'b00011101;
@@ -143,7 +139,7 @@ module REGISTERS(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
 initial begin
 	A		=	32'h0;
 	B		=	32'h0;
-	
+	// REGISTER VALUES
 	REGS[0]		=	32'h3;
 	REGS[1]		=	32'h4;
 	REGS[2]		=	32'h1;
@@ -180,7 +176,6 @@ end
 always @ (ReadReg1 or ReadReg2)	begin
 	A	<=	REGS[ReadReg1];
 	B	<=	REGS[ReadReg2];
-
 end
 
 endmodule
@@ -193,17 +188,19 @@ module ALUControl(ALUOp,FuncCode,ALUCtl);
 	reg		[1:0]	ALUOpNext;
 
 	always @ (FuncCode)	begin
-	case(FuncCode)
-		32: ALUOpNext <= 2;		// ADD
-		34: ALUOpNext <= 6;		// SUBSTRACT
-		36: ALUOpNext <= 0;		// AND
-		37: ALUOpNext <= 1;		// OR
-		39: ALUOpNext <= 12;		// NOR
-		42: ALUOpNext <= 7;		// SLT (Set Less Than)
-		default: ALUOpNext <= 15;	// Not happened
-	endcase
+		case(FuncCode)
+			32: ALUOpNext <= 2;		// ADD
+			34: ALUOpNext <= 6;		// SUBSTRACT
+			36: ALUOpNext <= 0;		// AND
+			37: ALUOpNext <= 1;		// OR
+			39: ALUOpNext <= 12;		// NOR
+			42: ALUOpNext <= 7;		// SLT (Set Less Than)
+			default: ALUOpNext <= 15;	// Not happened
+		endcase
 	end
-	always @(ALUOpNext)	ALUCtl <= ALUOpNext;
+	always @ (ALUOpNext)	begin
+		ALUCtl <= ALUOpNext;
+	end
 endmodule
 
 // MIPS ALU
@@ -249,7 +246,7 @@ initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
 	RegWrite= 0;
-	#30	RESET	= 1;
+	#100	RESET	= 1;
 	#5	RESET	= 0;
 end
 
