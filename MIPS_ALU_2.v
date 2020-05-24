@@ -113,7 +113,12 @@ module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,FuncCode)
 	output	reg	[4:0]	ReadReg1,ReadReg2,WriteReg;
 	output	reg	[5:0]	FuncCode;
 	reg	[31:0]	CurrentINS;
-
+initial begin
+	ReadReg1	=	5'h0;
+	ReadReg2	=	5'h0;	
+	WriteReg	=	5'h0;	
+	FuncCode	=	6'h0;
+end
 always @ (posedge	CLK) begin
 	CurrentINS	<=	INSTRUCTION;
 	ReadReg1	<=	INSTRUCTION[25:21];
@@ -134,6 +139,7 @@ module REGISTERS(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
 initial begin
 	A		=	32'h0;
 	B		=	32'h0;
+	
 
 	REGS[0]		=	32'h0;
 	REGS[1]		=	32'h0;
@@ -180,7 +186,7 @@ endmodule
 module tb_MIPSALU2();
 	reg	CLK	=	0;
 	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B;
-	reg	RESET,RegWrite;
+	reg		RESET,RegWrite;
 	wire	[4:0]	ReadReg1,ReadReg2,WriteReg;
 	wire	[5:0]	FuncCode;
 
