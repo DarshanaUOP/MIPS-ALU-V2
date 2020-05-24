@@ -98,23 +98,35 @@ initial begin
 end
 	always @ (PC_out) begin
 		//memReg[PC_out] = memReg[PC_out] + 8'h1;
-		INSTRUCTION[7:0] <= memReg[PC_out];
-		INSTRUCTION[15:8] <= memReg[PC_out + 1];
-		INSTRUCTION[23:16] <= memReg[PC_out + 2];
-		INSTRUCTION[31:24] <= memReg[PC_out + 3];
+		INSTRUCTION[7:0] 	<= memReg[PC_out + 3];
+		INSTRUCTION[15:8] 	<= memReg[PC_out + 2];
+		INSTRUCTION[23:16] 	<= memReg[PC_out + 1];
+		INSTRUCTION[31:24] 	<= memReg[PC_out];
 
 	end
 endmodule
 
+// instruction register
+module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg);
+	input	[31:0]	INSTRUCTION;
+	input		CLK;
+	output	reg	[4:0]	ReadReg1,ReadReg2,WriteReg;
+	reg	[31:0]	CurrentINS;
+always @ (posedge	CLK) begin
+	CurrentINS	<=	INSTRUCTION;
+end
+endmodule
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	0;
 	wire	[31:0]	PC_in,PC_out,INSTRUCTION;
 	reg	RESET;
+	wire	[4:0]	ReadReg1,ReadReg2,WriteReg;
 	
-	PC			PC0	(PC_in,PC_out,RESET,CLK);
+	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PC_in,PC_out,CLK);
 	INSTRUCTION_MEMORY 	IM	(PC_out,INSTRUCTION);
+	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg);
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
