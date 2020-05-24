@@ -185,7 +185,7 @@ module ALUControl(ALUOp,FuncCode,ALUCtl);
 	input		[1:0]	ALUOp;
 	input		[5:0]	FuncCode;
 	output	reg	[3:0]	ALUCtl;
-	reg		[1:0]	ALUOpNext;
+	reg		[3:0]	ALUOpNext;
 
 	always @ (FuncCode)	begin
 		case(FuncCode)
