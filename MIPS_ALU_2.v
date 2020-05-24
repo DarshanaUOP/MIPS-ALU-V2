@@ -71,22 +71,27 @@ initial begin
 	memReg[7] = 8'b00100100;
 	
 	//OR	{register6 OR register7 => register8 ;}
-	memReg[12] = 8'b00000101;
-	memReg[13] = 8'b00100111;
-	memReg[14] = 8'b01000000;
-	memReg[15] = 8'b00100101;
+	memReg[8] = 8'b00000101;
+	memReg[9] = 8'b00100111;
+	memReg[10] = 8'b01000000;
+	memReg[11] = 8'b00100101;
 	
 	//SUB	{register9 - register10 => register11} ;
-	memReg[8] = 8'b00011001;
-	memReg[9] = 8'b00101010;
-	memReg[10] = 8'b01011000;
-	memReg[11] = 8'b00100010;
+	memReg[12] = 8'b00011001;
+	memReg[13] = 8'b00101010;
+	memReg[14] = 8'b01011000;
+	memReg[15] = 8'b00100010;
 	
-	//SLT	register12 < register13 ?=> register14 ;
+	//SLT	register12 < register13 => register14? ;
 	memReg[16] = 8'b00011101;
 	memReg[17] = 8'b10001101;
 	memReg[18] = 8'b01110000;
 	memReg[19] = 8'b00101010;
+	//SLT	register18 < register19 => register20? ;
+	memReg[24] = 8'b00011110;
+	memReg[25] = 8'b01010011;
+	memReg[26] = 8'b10100000;
+	memReg[27] = 8'b00101010;
 	
 	//NOR	register15 + register16 => register17 ;
 	memReg[20] = 8'b00110001;
@@ -152,15 +157,15 @@ initial begin
 	REGS[9]		=	32'hd;
 	REGS[10]	=	32'ha;
 	REGS[11]	=	32'h0;
-	REGS[12]	=	32'h0;
-	REGS[13]	=	32'h0;
+	REGS[12]	=	32'h10;
+	REGS[13]	=	32'hf;
 	REGS[14]	=	32'h0;
 	REGS[15]	=	32'h0;
 	REGS[16]	=	32'h0;
 	REGS[17]	=	32'h0;
 	REGS[18]	=	32'h0;
-	REGS[19]	=	32'h0;
-	REGS[20]	=	32'h0;
+	REGS[19]	=	32'h10;
+	REGS[20]	=	32'hf;
 	REGS[21]	=	32'h0;
 	REGS[22]	=	32'h0;
 	REGS[23]	=	32'h0;
