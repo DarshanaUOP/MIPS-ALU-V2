@@ -14,12 +14,12 @@ initial begin
 	PC_out 	= 32'h0;
 end
 
-always @ (posedge RESET)	begin
-	PC_out	=	32'h0;
+always @ (RESET)	begin
+	PC_out	<=	32'h0;
+
 end
 
 always @ (negedge CLK) begin
-	//PC_val	<=	PC_in;
 	PC_out	= PC_in;
 end
 endmodule
@@ -34,6 +34,7 @@ module PC_ADDER(PC_in,PC_out,CLK);
 initial begin
 	PC_in = 32'h0;
 end
+
 always @ (posedge CLK)	begin
 	PC_in	= PC_out + 4;	
 end
@@ -93,7 +94,7 @@ initial begin
 	memReg[26] = 8'b10100000;
 	memReg[27] = 8'b00101010;
 	
-	//NOR	register15 + register16 => register17 ;
+	//NOR	register15 NOR register16 => register17 ;
 	memReg[20] = 8'b00110001;
 	memReg[21] = 8'b11110000;
 	memReg[22] = 8'b10001000;
@@ -160,8 +161,8 @@ initial begin
 	REGS[12]	=	32'h10;
 	REGS[13]	=	32'hf;
 	REGS[14]	=	32'h0;
-	REGS[15]	=	32'h0;
-	REGS[16]	=	32'h0;
+	REGS[15]	=	32'h2;
+	REGS[16]	=	32'h4;
 	REGS[17]	=	32'h0;
 	REGS[18]	=	32'h0;
 	REGS[19]	=	32'h10;
@@ -251,7 +252,7 @@ initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
 	RegWrite= 0;
-	#100	RESET	= 1;
+	#75	RESET	= 1;
 	#5	RESET	= 0;
 end
 
