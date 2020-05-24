@@ -165,6 +165,11 @@ initial begin
 	REGS[30]	=	32'h0;
 	REGS[31]	=	32'h0;
 end
+always @ (posedge CLK)	begin
+	A	<=	REGS[ReadReg1];
+	B	<=	REGS[ReadReg2];
+
+end
 
 endmodule
 
