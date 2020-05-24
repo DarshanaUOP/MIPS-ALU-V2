@@ -132,6 +132,9 @@ module REGISTERS(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
 	//DEFINING REGISTERS
 	reg		[31:0]	REGS[31:0];
 initial begin
+	A		=	32'h0;
+	B		=	32'h0;
+
 	REGS[0]		=	32'h0;
 	REGS[1]		=	32'h0;
 	REGS[2]		=	32'h0;
@@ -176,7 +179,7 @@ endmodule
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	0;
-	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData;
+	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B;
 	reg	RESET,RegWrite;
 	wire	[4:0]	ReadReg1,ReadReg2,WriteReg;
 	wire	[5:0]	FuncCode;
