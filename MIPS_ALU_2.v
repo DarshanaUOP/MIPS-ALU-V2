@@ -114,6 +114,10 @@ module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg);
 	reg	[31:0]	CurrentINS;
 always @ (posedge	CLK) begin
 	CurrentINS	<=	INSTRUCTION;
+	ReadReg1	<=	INSTRUCTION[25:21];
+	ReadReg2	<=	INSTRUCTION[20:16];
+	WriteReg	<=	INSTRUCTION[15:11];
+
 end
 endmodule
 //test bench
