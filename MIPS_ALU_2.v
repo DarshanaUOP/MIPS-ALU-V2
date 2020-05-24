@@ -107,7 +107,7 @@ end
 endmodule
 
 // instruction register
-module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg);
+module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,ALUCtl);
 	input	[31:0]	INSTRUCTION;
 	input		CLK;
 	output	reg	[4:0]	ReadReg1,ReadReg2,WriteReg;
@@ -120,6 +120,17 @@ always @ (posedge	CLK) begin
 
 end
 endmodule
+
+module REGISTERS(ReadReg1,ReadReg2,WriteReg,WriteDate,RegWrite,CLK,A,B);
+	input		[4:0]	ReadReg1,ReadReg2,WriteReg;
+	input			CLK,RegWrite;
+	output	reg	[31:0]	A,B;
+	
+	//DEFINING REGISTERS
+	reg		[31:0]	REGS[31:0];
+
+endmodule
+
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	0;
