@@ -123,20 +123,55 @@ always @ (posedge	CLK) begin
 end
 endmodule
 
-module REGISTERS(ReadReg1,ReadReg2,WriteReg,WriteDate,RegWrite,CLK,A,B);
+module REGISTERS(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
 	input		[4:0]	ReadReg1,ReadReg2,WriteReg;
 	input			CLK,RegWrite;
+	input		[31:0]	WriteData;
 	output	reg	[31:0]	A,B;
 	
 	//DEFINING REGISTERS
 	reg		[31:0]	REGS[31:0];
+initial begin
+	REGS[0]		=	32'h0;
+	REGS[1]		=	32'h0;
+	REGS[2]		=	32'h0;
+	REGS[3]		=	32'h0;
+	REGS[4]		=	32'h0;
+	REGS[5]		=	32'h0;
+	REGS[6]		=	32'h0;
+	REGS[7]		=	32'h0;
+	REGS[8]		=	32'h0;
+	REGS[9]		=	32'h0;
+	REGS[10]	=	32'h0;
+	REGS[11]	=	32'h0;
+	REGS[12]	=	32'h0;
+	REGS[13]	=	32'h0;
+	REGS[14]	=	32'h0;
+	REGS[15]	=	32'h0;
+	REGS[16]	=	32'h0;
+	REGS[17]	=	32'h0;
+	REGS[18]	=	32'h0;
+	REGS[19]	=	32'h0;
+	REGS[20]	=	32'h0;
+	REGS[21]	=	32'h0;
+	REGS[22]	=	32'h0;
+	REGS[23]	=	32'h0;
+	REGS[24]	=	32'h0;
+	REGS[25]	=	32'h0;
+	REGS[26]	=	32'h0;
+	REGS[27]	=	32'h0;
+	REGS[28]	=	32'h0;
+	REGS[29]	=	32'h0;
+	REGS[30]	=	32'h0;
+	REGS[31]	=	32'h0;
+end
 
 endmodule
 
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	0;
-	wire	[31:0]	PC_in,PC_out,INSTRUCTION;
+	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData;
 	reg	RESET,RegWrite;
 	wire	[4:0]	ReadReg1,ReadReg2,WriteReg;
 	wire	[5:0]	FuncCode;
@@ -145,10 +180,11 @@ module tb_MIPSALU2();
 	PC_ADDER		PA	(PC_in,PC_out,CLK);
 	INSTRUCTION_MEMORY 	IM	(PC_out,INSTRUCTION);
 	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,FuncCode);
-	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteDate,RegWrite,CLK,A,B);
+	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
+	RegWrite= 0;
 	#30	RESET	= 1;
 	#5	RESET	= 0;
 end
