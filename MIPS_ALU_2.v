@@ -204,15 +204,37 @@ module ALUControl(ALUOp,FuncCode,ALUCtl);
 	always @(ALUOpNext)	ALUCtl <= ALUOpNext;
 endmodule
 
+// MIPS ALU
+module MIPSALU(ALUCtl,A,B,ALUOut,Zero);
+	input 		[3:0] ALUCtl;
+	input 		[31:0] A,B;
+	output 	 reg	[31:0] ALUOut;
+	output		Zero;
+
+	assign Zero = (ALUOut==0);	// Zero is true if ALUOut is 0
+	always @(ALUCtl,A,B) begin	// reevaluate if these change
+		case (ALUCtl)
+			0: ALUOut <= A & B;
+			1: ALUOut <= A | B;
+			2: ALUOut <= A + B;
+			6: ALUOut <= A - B;
+			7: ALUOut <= A < B ? 1 : 0;
+			12: ALUOut <= ~(A | B);
+			default: ALUOut <= 0;
+		endcase
+	end
+endmodule
+
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	0;
-	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B;
+	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B,ALUOut;
 	reg		RESET,RegWrite;
 	wire	[4:0]	ReadReg1,ReadReg2,WriteReg;
 	wire	[5:0]	FuncCode;
 	wire	[1:0]	ALUOp;
 	wire	[3:0]	ALUCtl;
+	wire		Zero;
 
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PC_in,PC_out,CLK);
@@ -220,6 +242,7 @@ module tb_MIPSALU2();
 	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,FuncCode);
 	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
 	ALUControl		ALUCNTL	(ALUOp,FuncCode,ALUCtl);
+	MIPSALU			ALU	(ALUCtl,A,B,ALUOut,Zero);
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
