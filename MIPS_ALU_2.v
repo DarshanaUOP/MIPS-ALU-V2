@@ -48,51 +48,51 @@ module INSTRUCTION_MEMORY(PC_out,INSTRUCTION);
 initial begin
 	INSTRUCTION	=	32'h0;
 /*
-	register0 + register1 => register0 ;
+	register0 + register1 => register2 ;
 	op	:ADD 		-	000010
 	rs	:register0	-	00000  
 	rt	:register1 	-	00001
-	rd	:register0 	-	00000
+	rd	:register0 	-	00010
 	shmt	:		-	00000
 	funct	:		-	000000
 	
 	therefore::::
-	the INSTRUCTION		-	|000010 00|000 00001 |00000 000|00 000000
+	INSTRUCTION		-	|000010 00|000 00001 |00010 000|00 000000
 */
-	//ADD
-	memReg[0] = 8'h8;// 8'b00001000;
+	//ADD	
+	memReg[0] = 8'b00001000; //8'h8; 
 	memReg[1] = 8'b00000001;
-	memReg[2] = 8'b00000000;
+	memReg[2] = 8'b00010000;
 	memReg[3] = 8'b00000000;
 	
-	//AND	
+	//AND	{register3 AND register4 => register5 ;}
 	memReg[4] = 8'b00000000;
-	memReg[5] = 8'b00000001;
-	memReg[6] = 8'b00000000;
+	memReg[5] = 8'b01100100;
+	memReg[6] = 8'b00101000;
 	memReg[7] = 8'b00000000;
 	
-	//OR	
+	//OR	{register6 OR register7 => register8 ;}
 	memReg[8] = 8'b00000100;
-	memReg[9] = 8'b00000011;
-	memReg[10] = 8'b00000000;
+	memReg[9] = 8'b11000111;
+	memReg[10] = 8'b01000000;
 	memReg[11] = 8'b00000000;
 	
-	//SUB	
-	memReg[12] = 8'b00011000;
-	memReg[13] = 8'b00000001;
-	memReg[14] = 8'b00000000;
+	//SUB	{register9 - register10 => register11} ;
+	memReg[12] = 8'b00011001;
+	memReg[13] = 8'b10001001;
+	memReg[14] = 8'b01011000;
 	memReg[15] = 8'b00000000;
 	
-	//SLT	
-	memReg[16] = 8'b00011100;
-	memReg[17] = 8'b00000001;
-	memReg[18] = 8'b00000000;
+	//SLT	register12 < register13 ?=> register14 ;
+	memReg[16] = 8'b00011101;
+	memReg[17] = 8'b10001101;
+	memReg[18] = 8'b01110000;
 	memReg[19] = 8'b00000000;
 	
-	//NOR	
-	memReg[20] = 8'b00110000;
-	memReg[21] = 8'b00000001;
-	memReg[22] = 8'b00000000;
+	//NOR	register15 + register16 => register17 ;
+	memReg[20] = 8'b00110001;
+	memReg[21] = 8'b11110000;
+	memReg[22] = 8'b10001000;
 	memReg[23] = 8'b00000000;
 	
 end
