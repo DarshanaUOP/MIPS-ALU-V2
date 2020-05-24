@@ -252,7 +252,7 @@ initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
 	RegWrite= 0;
-	#75	RESET	= 1;
+	#70	RESET	= 1;
 	#5	RESET	= 0;
 end
 
