@@ -1,5 +1,5 @@
 /*
-
+	REFFERENCE 	: "Computer_Organization_and_Design_5th_Edi.pdf"
 */
 
 //Program Counter
@@ -8,15 +8,12 @@ module PC(PC_in,PC_out,RESET,CLK);
 	output	reg	[31:0]	PC_out;
 	input		RESET,CLK;
 
-	//reg		[31:0]	PC_val;
-	//reg		[31:0]	PC_out;
 initial begin
 	PC_out 	= 32'h0;
 end
 
 always @ (RESET)	begin
 	PC_out	<=	32'h0;
-
 end
 
 always @ (negedge CLK) begin
@@ -40,6 +37,7 @@ always @ (posedge CLK)	begin
 end
 endmodule
 
+//INSTRUCTION MEMORY
 module INSTRUCTION_MEMORY(PC_out,INSTRUCTION);
 	input 		[31:0]	PC_out;
 	output	reg	[31:0]	INSTRUCTION;
@@ -145,7 +143,7 @@ module REGISTERS(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
 initial begin
 	A		=	32'h0;
 	B		=	32'h0;
-	// REGISTER VALUES
+	// ASSIGN VALUES TO REGISTER 
 	REGS[0]		=	32'h3;
 	REGS[1]		=	32'h4;
 	REGS[2]		=	32'h1;
