@@ -236,7 +236,7 @@ endmodule
 //central controller
 module CONTROL(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite);
 	input	[5:0]	opcode;
-	output	[2:0]	ALUOp;
+	output	[1:0]	ALUOp;
 	output reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite;
 	reg	[8:0]	outputCode;
 /*
@@ -246,11 +246,11 @@ outputCode format :
 always @ (opcode)	begin
 	case(opcode)
 		//dont cares has implemented as zero	
-		0 :	outputCode	<= 	8'b100100010	//R-Type
-		35: 	outputCode	<= 	8'b011110000	//load word
-		43:	outputCode	<= 	8'b010001000	//store word
-		8 :	outputCode	<= 	8'b000000101
-		default: 	//default 
+		0 :	outputCode	<= 	9'b100100010;	//R-Type
+		35: 	outputCode	<= 	9'b011110000;	//load word
+		43:	outputCode	<= 	9'b010001000;	//store word
+		8 :	outputCode	<= 	9'b000000101;
+		default: outputCode	<= 	9'b100100010;	//R-Type	//default 
 	endcase
 	
 	//assign to output registers
@@ -261,7 +261,7 @@ always @ (opcode)	begin
 	MemRead		=	outputCode[4];
 	MemWrite	=	outputCode[3];
 	Branch		=	outputCode[2];
-	ALUOp		=	outputCode[1:0];
+	ALUOp		<=	outputCode[1:0];
 	
 end
 endmodule
@@ -277,6 +277,9 @@ module tb_MIPSALU2();
 	wire	[3:0]	ALUCtl;
 	wire		Zero;
 
+	wire	[5:0]	opcode;
+	wire	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite;
+
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PC_in,PC_out,CLK);
 	INSTRUCTION_MEMORY 	IM	(PC_out,INSTRUCTION);
@@ -284,6 +287,8 @@ module tb_MIPSALU2();
 	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
 	ALUControl		ALUCNTL	(ALUOp,FuncCode,ALUCtl);
 	MIPSALU			ALU	(ALUCtl,A,B,ALUOut,Zero);
+	CONTROL			CTRL	(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite);
+
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
