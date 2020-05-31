@@ -252,6 +252,17 @@ always @ (opcode)	begin
 		8 :	outputCode	<= 	8'b000000101
 		default: 	//default 
 	endcase
+	
+	//assign to output registers
+	RegDst		=	outputCode[8];
+	ALUSrc		=	outputCode[7];
+	MemtoReg	=	outputCode[6];
+	RegWrite	=	outputCode[5];
+	MemRead		=	outputCode[4];
+	MemWrite	=	outputCode[3];
+	Branch		=	outputCode[2];
+	ALUOp		=	outputCode[1:0];
+	
 end
 endmodule
 
