@@ -140,13 +140,13 @@ module REGISTERS(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,ReadData2);
 	input		[4:0]	ReadReg1,ReadReg2,WriteReg;
 	input			CLK,RegWrite;
 	input		[31:0]	WriteData;
-	output	reg	[31:0]	A,B;
+	output	reg	[31:0]	A,ReadData2;
 	
 	//DEFINING REGISTERS
 	reg		[31:0]	REGS[31:0];
 initial begin
 	A		=	32'h0;
-	B		=	32'h0;
+	ReadData2	=	32'h0;
 	// ASSIGN VALUES TO REGISTER 
 	REGS[0]		=	32'h3;
 	REGS[1]		=	32'h4;
@@ -182,8 +182,8 @@ initial begin
 	REGS[31]	=	32'h0;
 end
 always @ (ReadReg1 or ReadReg2)	begin
-	A	<=	REGS[ReadReg1];
-	B	<=	REGS[ReadReg2];
+	A		<=	REGS[ReadReg1];
+	ReadData2	<=	REGS[ReadReg2];
 end
 
 endmodule
@@ -317,6 +317,31 @@ always @ (ReadData3)	begin
 end	
 	
 endmodule
+
+//Data Memory
+module DATAMEM(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
+	input	[31:0]	ALUOut;			//Address for the DataMemory
+	input	[31:0]	ReadData2;		//WriteData For DataMem
+	input		MemWrite,MemRead;	//Control signals for DataMem
+
+	//DEFINING REGISTERS
+	reg		[7:0]	GPREGS[1048576:0];	//General purpous regs
+always @ (MemRead)	begin
+	//Reading from the memory
+	ReadData3[7:0]		<=	GPREGS[ALUOut];
+	ReadData3[15:8]		<=	GPREGS[ALUOut+1];
+	ReadData3[23:16]	<=	GPREGS[ALUOut+2];
+	ReadData3[31:24]	<=	GPREGS[ALUOut+3];
+end
+
+always	@ (posedge MemWrite)	begin
+	//writing on the Memory
+	GPREGS[ALUOut]		<=	ReadData2[7:0];
+	GPREGS[ALUOut+1]	<=	ReadData2[15:8];
+	GPREGS[ALUOut+2]	<=	ReadData2[23:16];
+	GPREGS[ALUOut+3]	<=	ReadData2[31:24];
+end 
+endmodule
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	0;
@@ -330,8 +355,8 @@ module tb_MIPSALU2();
 
 	wire	[5:0]	opcode;
 	reg		RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc;
-	wire	[15;0]	signExtIn;
-	wire	[15;0]	signExtOut;
+	wire	[15:0]	signExtIn;
+	wire	[31:0]	signExtOut;
 
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PC_in,PC_out,CLK);
@@ -341,7 +366,11 @@ module tb_MIPSALU2();
 	ALUControl		ALUCNTL	(ALUOp,FuncCode,ALUCtl);
 	MIPSALU			ALU	(ALUCtl,A,B,ALUOut,Zero);
 	CONTROL			CTRL	(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite);
-
+	SIGN_EXTENSION		SIGNEXT	(signExtIn,signExtOut);
+	MUX0			MUX0	(ReadReg2,WriteReg0,RegDst,WriteReg);
+	MUX1			MUX1	(ReadData2,signExtOut,ALUSrc,B);
+	MUX2			MUX2	(ReadData3,ReadData2,WriteData,MemtoReg);
+	DATAMEM			DATAMEM	(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
