@@ -323,7 +323,7 @@ module DATAMEM(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
 	input	[31:0]	ALUOut;			//Address for the DataMemory
 	input	[31:0]	ReadData2;		//WriteData For DataMem
 	input		MemWrite,MemRead;	//Control signals for DataMem
-
+	output	reg	[31:0]	ReadData3;	//output port of the module
 	//DEFINING REGISTERS
 	reg		[7:0]	GPREGS[1048576:0];	//General purpous regs
 always @ (MemRead)	begin
@@ -346,7 +346,7 @@ endmodule
 module tb_MIPSALU2();
 	reg	CLK	=	0;
 	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B,ALUOut,ReadData2;
-	reg		RESET,RegWrite;
+	reg		RESET;
 	wire	[4:0]	ReadReg1,ReadReg2,WriteReg,WriteReg0;
 	wire	[5:0]	FuncCode;
 	wire	[1:0]	ALUOp;
@@ -354,7 +354,7 @@ module tb_MIPSALU2();
 	wire		Zero;
 
 	wire	[5:0]	opcode;
-	reg		RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc;
+	wire		RegWrite,RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc;
 	wire	[15:0]	signExtIn;
 	wire	[31:0]	signExtOut;
 
@@ -374,7 +374,7 @@ module tb_MIPSALU2();
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
-	RegWrite= 0;
+	//RegWrite= 0;
 	#70	RESET	= 1;
 	#5	RESET	= 0;
 end
