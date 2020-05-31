@@ -110,24 +110,24 @@ end
 endmodule
 
 // instruction register
-module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,FuncCode,opcode,signExtIn);
+module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg0,FuncCode,opcode,signExtIn);
 	input	[31:0]	INSTRUCTION;
 	input		CLK;
-	output	reg	[4:0]	ReadReg1,ReadReg2,WriteReg;
+	output	reg	[4:0]	ReadReg1,ReadReg2,WriteReg0;
 	output	reg	[5:0]	FuncCode,opcode;
 	output	reg	[15:0]	signExtIn;
 	reg	[31:0]	CurrentINS;
 initial begin
 	ReadReg1	=	5'h0;
 	ReadReg2	=	5'h0;	
-	WriteReg	=	5'h0;	
+	WriteReg0	=	5'h0;	
 	FuncCode	=	6'h0;
 end
 always @ (posedge	CLK) begin
 	CurrentINS	<=	INSTRUCTION;
 	ReadReg1	<=	INSTRUCTION[25:21];
 	ReadReg2	<=	INSTRUCTION[20:16];
-	WriteReg	<=	INSTRUCTION[15:11];
+	WriteReg0	<=	INSTRUCTION[15:11];
 	FuncCode	<=	INSTRUCTION[5:0];
 	opcode		<=	INSTRUCTION[31:26];
 	signExtIn	<=	INSTRUCTION[15:0];	
@@ -266,12 +266,28 @@ always @ (opcode)	begin
 end
 endmodule
 
+//mux0
+module MUX0(ReadReg2,WriteReg0,RegDst,WriteReg);
+	input	[5:0]	ReadReg2;
+	input	[5:0]	WriteReg0;
+	input		RegDst;
+	output	reg	[5:0]	WriteReg;
+
+always @ (WriteReg0)	begin
+	case(RegDst)
+		0 :	WriteReg <=	ReadReg2;
+		1 :	WriteReg <=	WriteReg0;
+	endcase
+end
+
+endmodule
+
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	0;
 	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B,ALUOut;
 	reg		RESET,RegWrite;
-	wire	[4:0]	ReadReg1,ReadReg2,WriteReg;
+	wire	[4:0]	ReadReg1,ReadReg2,WriteReg,WriteReg0;
 	wire	[5:0]	FuncCode;
 	wire	[1:0]	ALUOp;
 	wire	[3:0]	ALUCtl;
@@ -283,7 +299,7 @@ module tb_MIPSALU2();
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PC_in,PC_out,CLK);
 	INSTRUCTION_MEMORY 	IM	(PC_out,INSTRUCTION);
-	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,FuncCode,opcode,signExtIn);
+	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg0,FuncCode,opcode,signExtIn);
 	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
 	ALUControl		ALUCNTL	(ALUOp,FuncCode,ALUCtl);
 	MIPSALU			ALU	(ALUCtl,A,B,ALUOut,Zero);
