@@ -123,6 +123,7 @@ initial begin
 	WriteReg0	=	5'h0;	
 	FuncCode	=	6'h0;
 	opcode		=	6'h0;
+	signExtIn	<=	16'h0;
 end
 always @ (posedge	CLK) begin
 	CurrentINS	<=	INSTRUCTION;
@@ -309,7 +310,7 @@ module MUX1(ReadData2,signExtOut,ALUSrc,B);
 initial begin
 	B	=	32'h0;
 end
-always @ (signExtOut)	begin
+always @ (ALUSrc)	begin
 	case(ALUSrc)
 		0 :	B	<=	ReadData2;
 		1 :	B	<=	signExtOut;
@@ -317,18 +318,18 @@ always @ (signExtOut)	begin
 end 	
 endmodule
 //mux2 switch ALUout and DataMem(ReadData3) to write data in REGISTERS
-module MUX2(ReadData3,ReadData2,WriteData,MemtoReg);
+module MUX2(ReadData3,ALUOut,WriteData,MemtoReg);
 	input	[31:0]	ReadData3;
-	input	[31:0]	ReadData2;
+	input	[31:0]	ALUOut;
 	input		MemtoReg;
 	output	reg	[31:0]	WriteData;
 initial begin
 	WriteData	<=	32'h0;
 end
-always @ (ReadData3)	begin
+always @ (MemtoReg)	begin
 	case(MemtoReg)
 		0 :	WriteData	<=	ReadData3;
-		1 :	WriteData	<=	ReadData2;
+		1 :	WriteData	<=	ALUOut;
 	endcase
 end	
 	
@@ -342,16 +343,23 @@ module DATAMEM(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
 	output	reg	[31:0]	ReadData3;	//output port of the module
 	//DEFINING REGISTERS
 	reg		[7:0]	GPREGS[1048576:0];	//General purpous regs
+	integer i;	
 initial begin
-	ReadData3 <= 32'h0;
-end
+	ReadData3 	<= 32'ha;
+	// initialize atleast first 1024 locations
+	for (i=0; i<1048576; i=i+1) begin
+		GPREGS[i]	<= 8'ha;
+	end
 
+end
 always @ (MemRead)	begin
 	//Reading from the memory
+
 	ReadData3[7:0]		<=	GPREGS[ALUOut];
 	ReadData3[15:8]		<=	GPREGS[ALUOut+1];
 	ReadData3[23:16]	<=	GPREGS[ALUOut+2];
 	ReadData3[31:24]	<=	GPREGS[ALUOut+3];
+
 end
 
 always	@ (posedge MemWrite)	begin
@@ -389,7 +397,7 @@ module tb_MIPSALU2();
 	SIGN_EXTENSION		SIGNEXT	(signExtIn,signExtOut);
 	MUX0			MUX0	(ReadReg2,WriteReg0,RegDst,WriteReg);
 	MUX1			MUX1	(ReadData2,signExtOut,ALUSrc,B);
-	MUX2			MUX2	(ReadData3,ReadData2,WriteData,MemtoReg);
+	MUX2			MUX2	(ReadData3,ALUOut,WriteData,MemtoReg);
 	DATAMEM			DATAMEM	(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
 initial begin
 	//PC_in = 32'h0;
