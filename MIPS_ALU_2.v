@@ -110,11 +110,12 @@ end
 endmodule
 
 // instruction register
-module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,FuncCode);
+module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,FuncCode,opcode,signExtIn);
 	input	[31:0]	INSTRUCTION;
 	input		CLK;
 	output	reg	[4:0]	ReadReg1,ReadReg2,WriteReg;
-	output	reg	[5:0]	FuncCode;
+	output	reg	[5:0]	FuncCode,opcode;
+	output	reg	[15:0]	signExtIn;
 	reg	[31:0]	CurrentINS;
 initial begin
 	ReadReg1	=	5'h0;
@@ -128,9 +129,12 @@ always @ (posedge	CLK) begin
 	ReadReg2	<=	INSTRUCTION[20:16];
 	WriteReg	<=	INSTRUCTION[15:11];
 	FuncCode	<=	INSTRUCTION[5:0];
+	opcode		<=	INSTRUCTION[31:26];
+	signExtIn	<=	INSTRUCTION[15:0];	
 end
 endmodule
 
+//
 //Register file
 module REGISTERS(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
 	input		[4:0]	ReadReg1,ReadReg2,WriteReg;
@@ -228,6 +232,8 @@ module MIPSALU(ALUCtl,A,B,ALUOut,Zero);
 	end
 endmodule
 
+
+//central controller
 module CONTROL(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite);
 	input	[5:0]	opcode;
 	output	[2:0]	ALUOp;
@@ -250,7 +256,7 @@ module tb_MIPSALU2();
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PC_in,PC_out,CLK);
 	INSTRUCTION_MEMORY 	IM	(PC_out,INSTRUCTION);
-	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,FuncCode);
+	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg,FuncCode,opcode,signExtIn);
 	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
 	ALUControl		ALUCNTL	(ALUOp,FuncCode,ALUCtl);
 	MIPSALU			ALU	(ALUCtl,A,B,ALUOut,Zero);
