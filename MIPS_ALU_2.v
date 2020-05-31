@@ -228,6 +228,14 @@ module MIPSALU(ALUCtl,A,B,ALUOut,Zero);
 	end
 endmodule
 
+module CONTROL(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite);
+	input	[5:0]	opcode;
+	output	[2:0]	ALUOp;
+	output reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite;
+
+
+endmodule
+
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	0;
