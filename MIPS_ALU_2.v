@@ -272,7 +272,7 @@ module SIGN_EXTENSION(signExtIn,signExtOut);
 	input		[15:0]	signExtIn;
 	output	reg	[31:0]	signExtOut;
 always @ (signExtIn) begin
-	signExtOut[31:0] <= { {16{signExtIn[15]}}, signExtIn[15:0] };
+	signExtOut <= ~signExtIn + 1;
 end
 endmodule
 //mux0 switch instruction[20:16] and  instruction[20:16] to write register
