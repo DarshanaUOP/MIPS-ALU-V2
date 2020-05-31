@@ -99,10 +99,10 @@ initial begin
 	memReg[23] = 8'b00100111;
 
 	//Load word  ;
-	memReg[24] = 8'b10001101;
-	memReg[25] = 8'b11110000;
-	memReg[26] = 8'b10001000;
-	memReg[27] = 8'b00100111;
+	memReg[24] = 8'b10001111;
+	memReg[25] = 8'b11111110;
+	memReg[26] = 8'b00000000;
+	memReg[27] = 8'b00001010;
 
 
 	
@@ -195,7 +195,7 @@ always @ (ReadReg1 or ReadReg2)	begin
 	A		<=	REGS[ReadReg1];
 	ReadData2	<=	REGS[ReadReg2];
 end
-always @ (negedge RegWrite) begin
+always @ (RegWrite) begin
 	REGS[WriteReg]		<= WriteData;
 end
 
@@ -359,9 +359,9 @@ initial begin
 	ReadData3 	<= 32'ha;
 	// initialize locations
 	for (i=0; i<1048576; i=i+1) begin
-		GPREGS[i]	<= 8'ha;
+		GPREGS[i]	<= 8'h0;
 	end
-
+	GPREGS[0]	<= 8'ha;
 end
 always @ (MemRead)	begin
 	//Reading from the memory
