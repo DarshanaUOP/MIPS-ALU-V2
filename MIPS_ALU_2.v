@@ -104,7 +104,12 @@ initial begin
 	memReg[26] = 8'b00000000;
 	memReg[27] = 8'b00001010;
 
-
+	//store word
+	memReg[29] = 8'b10101111;
+	memReg[30] = 8'b10011111;
+	memReg[31] = 8'b00000000;
+	memReg[32] = 8'b00001000;
+	
 	
 end
 	always @ (PC_out) begin
@@ -186,16 +191,16 @@ initial begin
 	REGS[25]	=	32'h0;
 	REGS[26]	=	32'h0;
 	REGS[27]	=	32'h0;
-	REGS[28]	=	32'h0;
+	REGS[28]	=	32'hc;	//for store
 	REGS[29]	=	32'h0;
 	REGS[30]	=	32'h0;
-	REGS[31]	=	32'ha;//for load
+	REGS[31]	=	32'ha;	//for load
 end
 always @ (ReadReg1 or ReadReg2)	begin
 	A		<=	REGS[ReadReg1];
 	ReadData2	<=	REGS[ReadReg2];
 end
-always @ (RegWrite) begin
+always @ (WriteData) begin
 	REGS[WriteReg]		<= WriteData;
 end
 
