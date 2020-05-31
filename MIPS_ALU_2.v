@@ -277,7 +277,7 @@ end
 outputCode format :
 [RegDst,ALUSrc,MemtoReg,RegWrite,MemRead,MemWrite,Branch,ALUOp1,ALUOp0]
 */
-always @ (opcode)	begin
+always @ (*)	begin
 	case(opcode)
 		//dont cares has implemented as zero	
 		0 :	outputCode	<= 	9'b100100010;	//R-Type
@@ -321,7 +321,7 @@ module MUX0(ReadReg2,WriteReg0,RegDst,WriteReg);
 initial begin
 	WriteReg	<=	4'h0;
 end
-always @ (WriteReg0)	begin
+always @ (RegDst)	begin
 	case(RegDst)
 		0 :	WriteReg <=	ReadReg2;
 		1 :	WriteReg <=	WriteReg0;
