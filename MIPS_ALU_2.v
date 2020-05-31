@@ -87,11 +87,12 @@ initial begin
 	memReg[18] = 8'b01110000;
 	memReg[19] = 8'b00101010;
 	//SLT	register18 < register19 => register20? ;
+	/*
 	memReg[24] = 8'b00000010;
 	memReg[25] = 8'b01010011;
 	memReg[26] = 8'b10100000;
 	memReg[27] = 8'b00101010;
-	
+	*/
 	//NOR	register15 NOR register16 => register17 ;
 	memReg[20] = 8'b00000001;
 	memReg[21] = 8'b11110000;
@@ -105,12 +106,10 @@ initial begin
 	memReg[27] = 8'b00001010;
 
 	//store word
-	memReg[29] = 8'b10101111;
-	memReg[30] = 8'b10011111;
-	memReg[31] = 8'b00000000;
-	memReg[32] = 8'b00001000;
-	
-	
+	memReg[28] = 8'b10101111;
+	memReg[29] = 8'b10011111;
+	memReg[30] = 8'b00000000;
+	memReg[31] = 8'b00001000;
 end
 	always @ (PC_out) begin
 		//memReg[PC_out] = memReg[PC_out] + 8'h1;
@@ -436,8 +435,8 @@ initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
 	//RegWrite= 0;
-	//#70	RESET	= 1;
-	//#5	RESET	= 0;
+	#90	RESET	= 1;
+	#5	RESET	= 0;
 end
 
 always begin
