@@ -236,8 +236,8 @@ endmodule
 //central controller
 module CONTROL(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite);
 	input	[5:0]	opcode;
-	output	[1:0]	ALUOp;
-	output reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite;
+	output	reg	[1:0]	ALUOp;
+	output	reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite;
 	reg	[8:0]	outputCode;
 /*
 outputCode format :
@@ -278,7 +278,7 @@ module tb_MIPSALU2();
 	wire		Zero;
 
 	wire	[5:0]	opcode;
-	wire	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite;
+	reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc;
 
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PC_in,PC_out,CLK);
