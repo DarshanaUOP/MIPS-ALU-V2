@@ -238,8 +238,21 @@ module CONTROL(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWr
 	input	[5:0]	opcode;
 	output	[2:0]	ALUOp;
 	output reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite;
-
-
+	reg	[8:0]	outputCode;
+/*
+outputCode format :
+[RegDst,ALUSrc,MemtoReg,RegWrite,MemRead,MemWrite,Branch,ALUOp1,ALUOp0]
+*/
+always @ (opcode)	begin
+	case(opcode)
+		//dont cares has implemented as zero	
+		0 :	outputCode	<= 	8'b100100010	//R-Type
+		35: 	outputCode	<= 	8'b011110000	//load word
+		43:	outputCode	<= 	8'b010001000	//store word
+		8 :	outputCode	<= 	8'b000000101
+		default: 	//default 
+	endcase
+end
 endmodule
 
 //test bench
