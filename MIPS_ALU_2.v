@@ -97,6 +97,14 @@ initial begin
 	memReg[21] = 8'b11110000;
 	memReg[22] = 8'b10001000;
 	memReg[23] = 8'b00100111;
+
+	//Load word  ;
+	memReg[24] = 8'b10001101;
+	memReg[25] = 8'b11110000;
+	memReg[26] = 8'b10001000;
+	memReg[27] = 8'b00100111;
+
+
 	
 end
 	always @ (PC_out) begin
@@ -181,11 +189,14 @@ initial begin
 	REGS[28]	=	32'h0;
 	REGS[29]	=	32'h0;
 	REGS[30]	=	32'h0;
-	REGS[31]	=	32'h0;
+	REGS[31]	=	32'ha;//for load
 end
 always @ (ReadReg1 or ReadReg2)	begin
 	A		<=	REGS[ReadReg1];
 	ReadData2	<=	REGS[ReadReg2];
+end
+always @ (negedge RegWrite) begin
+	REGS[WriteReg]		<= WriteData;
 end
 
 endmodule
@@ -346,7 +357,7 @@ module DATAMEM(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
 	integer i;	
 initial begin
 	ReadData3 	<= 32'ha;
-	// initialize atleast first 1024 locations
+	// initialize locations
 	for (i=0; i<1048576; i=i+1) begin
 		GPREGS[i]	<= 8'ha;
 	end
@@ -403,8 +414,8 @@ initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
 	//RegWrite= 0;
-	#70	RESET	= 1;
-	#5	RESET	= 0;
+	//#70	RESET	= 1;
+	//#5	RESET	= 0;
 end
 
 always begin
