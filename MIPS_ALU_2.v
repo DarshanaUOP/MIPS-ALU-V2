@@ -266,7 +266,16 @@ always @ (opcode)	begin
 end
 endmodule
 
-//mux0
+
+//signExtension unit
+module SIGN_EXTENSION(signExtIn,signExtOut);
+	input		[15:0]	signExtIn;
+	output	reg	[31:0]	signExtOut;
+always @ (signExtIn) begin
+	signExtOut[31:0] <= { {16{signExtIn[15]}}, signExtIn[15:0] };
+end
+endmodule
+//mux0 switch instruction[20:16] and  instruction[20:16] to write register
 module MUX0(ReadReg2,WriteReg0,RegDst,WriteReg);
 	input	[5:0]	ReadReg2;
 	input	[5:0]	WriteReg0;
@@ -279,8 +288,10 @@ always @ (WriteReg0)	begin
 		1 :	WriteReg <=	WriteReg0;
 	endcase
 end
-
 endmodule
+
+//mux1 switch readData2 and signExt to B in ALU
+//mux2 switch readData2 and signExt to B in ALU
 
 //test bench
 module tb_MIPSALU2();
@@ -294,7 +305,9 @@ module tb_MIPSALU2();
 	wire		Zero;
 
 	wire	[5:0]	opcode;
-	reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc;
+	reg		RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc;
+	wire	[15;0]	signExtIn;
+	wire	[15;0]	signExtOut;
 
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PC_in,PC_out,CLK);
