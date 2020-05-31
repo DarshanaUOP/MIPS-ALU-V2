@@ -58,7 +58,7 @@ initial begin
 	INSTRUCTION		-	|000010 00|000 00001 |00010 000|00 100000
 */
 	//ADD	
-	memReg[0] = 8'b00001000; //8'h8; 
+	memReg[0] = 8'b00000000; //8'h8; 
 	memReg[1] = 8'b00000001;
 	memReg[2] = 8'b00010000;
 	memReg[3] = 8'b00100000;
@@ -70,30 +70,30 @@ initial begin
 	memReg[7] = 8'b00100100;
 	
 	//OR	{register6 OR register7 => register8 ;}
-	memReg[8] = 8'b00000101;
+	memReg[8] = 8'b00000001;
 	memReg[9] = 8'b00100111;
 	memReg[10] = 8'b01000000;
 	memReg[11] = 8'b00100101;
 	
 	//SUB	{register9 - register10 => register11} ;
-	memReg[12] = 8'b00011001;
+	memReg[12] = 8'b00000001;
 	memReg[13] = 8'b00101010;
 	memReg[14] = 8'b01011000;
 	memReg[15] = 8'b00100010;
 	
 	//SLT	register12 < register13 => register14? ;
-	memReg[16] = 8'b00011101;
+	memReg[16] = 8'b00000001;
 	memReg[17] = 8'b10001101;
 	memReg[18] = 8'b01110000;
 	memReg[19] = 8'b00101010;
 	//SLT	register18 < register19 => register20? ;
-	memReg[24] = 8'b00011110;
+	memReg[24] = 8'b00000010;
 	memReg[25] = 8'b01010011;
 	memReg[26] = 8'b10100000;
 	memReg[27] = 8'b00101010;
 	
 	//NOR	register15 NOR register16 => register17 ;
-	memReg[20] = 8'b00110001;
+	memReg[20] = 8'b00000001;
 	memReg[21] = 8'b11110000;
 	memReg[22] = 8'b10001000;
 	memReg[23] = 8'b00100111;
