@@ -207,7 +207,7 @@ module ALUControl(ALUOp,FuncCode,ALUCtl);
 	input		[5:0]	FuncCode;
 	output	reg	[3:0]	ALUCtl;
 	reg		[3:0]	ALUOpNext;
-
+/*
 	always @ (FuncCode)	begin
 		case(FuncCode)
 			32: ALUOpNext <= 2;		// ADD
@@ -219,9 +219,26 @@ module ALUControl(ALUOp,FuncCode,ALUCtl);
 			default: ALUOpNext <= 15;	// Not happened
 		endcase
 	end
+*/
+	always @(*)	begin
+		case(ALUOp)	
+			2 :case(FuncCode)
+				32: ALUCtl <= 2;		// ADD
+				34: ALUCtl <= 6;		// SUBSTRACT
+				36: ALUCtl <= 0;		// AND
+				37: ALUCtl <= 1;		// OR
+				39: ALUCtl <= 12;		// NOR
+				42: ALUCtl <= 7;		// SLT (Set Less Than)
+				default: ALUCtl <= 15;	// Not happened
+			endcase
+			0 : ALUCtl <= 2;	// for lw/sw
+		endcase
+	end
+/*
 	always @ (ALUOpNext)	begin
 		ALUCtl <= ALUOpNext;
 	end
+*/
 endmodule
 
 // MIPS ALU
