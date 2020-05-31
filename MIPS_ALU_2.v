@@ -122,6 +122,7 @@ initial begin
 	ReadReg2	=	5'h0;	
 	WriteReg0	=	5'h0;	
 	FuncCode	=	6'h0;
+	opcode		=	6'h0;
 end
 always @ (posedge	CLK) begin
 	CurrentINS	<=	INSTRUCTION;
@@ -239,6 +240,10 @@ module CONTROL(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWr
 	output	reg	[1:0]	ALUOp;
 	output	reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite;
 	reg	[8:0]	outputCode;
+
+initial begin
+	outputCode = 9'h0;
+end
 /*
 outputCode format :
 [RegDst,ALUSrc,MemtoReg,RegWrite,MemRead,MemWrite,Branch,ALUOp1,ALUOp0]
@@ -271,17 +276,22 @@ endmodule
 module SIGN_EXTENSION(signExtIn,signExtOut);
 	input		[15:0]	signExtIn;
 	output	reg	[31:0]	signExtOut;
+initial begin
+	signExtOut	= 32'h0;
+end
 always @ (signExtIn) begin
 	signExtOut <= ~signExtIn + 1;
 end
 endmodule
 //mux0 switch instruction[20:16] and  instruction[20:16] to write register
 module MUX0(ReadReg2,WriteReg0,RegDst,WriteReg);
-	input	[5:0]	ReadReg2;
-	input	[5:0]	WriteReg0;
+	input	[4:0]	ReadReg2;
+	input	[4:0]	WriteReg0;
 	input		RegDst;
-	output	reg	[5:0]	WriteReg;
-
+	output	reg	[4:0]	WriteReg;
+initial begin
+	WriteReg	<=	4'h0;
+end
 always @ (WriteReg0)	begin
 	case(RegDst)
 		0 :	WriteReg <=	ReadReg2;
@@ -296,6 +306,9 @@ module MUX1(ReadData2,signExtOut,ALUSrc,B);
 	input	[31:0]	signExtOut;
 	input		ALUSrc;
 	output	reg	[31:0]	B;
+initial begin
+	B	=	32'h0;
+end
 always @ (signExtOut)	begin
 	case(ALUSrc)
 		0 :	B	<=	ReadData2;
@@ -309,6 +322,9 @@ module MUX2(ReadData3,ReadData2,WriteData,MemtoReg);
 	input	[31:0]	ReadData2;
 	input		MemtoReg;
 	output	reg	[31:0]	WriteData;
+initial begin
+	WriteData	<=	32'h0;
+end
 always @ (ReadData3)	begin
 	case(MemtoReg)
 		0 :	WriteData	<=	ReadData3;
@@ -326,6 +342,10 @@ module DATAMEM(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
 	output	reg	[31:0]	ReadData3;	//output port of the module
 	//DEFINING REGISTERS
 	reg		[7:0]	GPREGS[1048576:0];	//General purpous regs
+initial begin
+	ReadData3 <= 32'h0;
+end
+
 always @ (MemRead)	begin
 	//Reading from the memory
 	ReadData3[7:0]		<=	GPREGS[ALUOut];
@@ -345,7 +365,7 @@ endmodule
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	0;
-	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B,ALUOut,ReadData2;
+	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B,ALUOut,ReadData2,ReadData3;
 	reg		RESET;
 	wire	[4:0]	ReadReg1,ReadReg2,WriteReg,WriteReg0;
 	wire	[5:0]	FuncCode;
