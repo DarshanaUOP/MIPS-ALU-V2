@@ -136,7 +136,7 @@ endmodule
 
 //
 //Register file
-module REGISTERS(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
+module REGISTERS(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,ReadData2);
 	input		[4:0]	ReadReg1,ReadReg2,WriteReg;
 	input			CLK,RegWrite;
 	input		[31:0]	WriteData;
@@ -291,12 +291,36 @@ end
 endmodule
 
 //mux1 switch readData2 and signExt to B in ALU
-//mux2 switch readData2 and signExt to B in ALU
-
+module MUX1(ReadData2,signExtOut,ALUSrc,B);
+	input	[31:0]	ReadData2;
+	input	[31:0]	signExtOut;
+	input		ALUSrc;
+	output	reg	[31:0]	B;
+always @ (signExtOut)	begin
+	case(ALUSrc)
+		0 :	B	<=	ReadData2;
+		1 :	B	<=	signExtOut;
+	endcase
+end 	
+endmodule
+//mux2 switch ALUout and DataMem(ReadData3) to write data in REGISTERS
+module MUX2(ReadData3,ReadData2,WriteData,MemtoReg);
+	input	[31:0]	ReadData3;
+	input	[31:0]	ReadData2;
+	input		MemtoReg;
+	output	reg	[31:0]	WriteData;
+always @ (ReadData3)	begin
+	case(MemtoReg)
+		0 :	WriteData	<=	ReadData3;
+		1 :	WriteData	<=	ReadData2;
+	endcase
+end	
+	
+endmodule
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	0;
-	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B,ALUOut;
+	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B,ALUOut,ReadData2;
 	reg		RESET,RegWrite;
 	wire	[4:0]	ReadReg1,ReadReg2,WriteReg,WriteReg0;
 	wire	[5:0]	FuncCode;
@@ -313,7 +337,7 @@ module tb_MIPSALU2();
 	PC_ADDER		PA	(PC_in,PC_out,CLK);
 	INSTRUCTION_MEMORY 	IM	(PC_out,INSTRUCTION);
 	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg0,FuncCode,opcode,signExtIn);
-	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,B);
+	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,ReadData2);
 	ALUControl		ALUCNTL	(ALUOp,FuncCode,ALUCtl);
 	MIPSALU			ALU	(ALUCtl,A,B,ALUOut,Zero);
 	CONTROL			CTRL	(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite);
