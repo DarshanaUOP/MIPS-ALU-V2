@@ -210,20 +210,7 @@ module ALUControl(ALUOp,FuncCode,ALUCtl);
 	input		[1:0]	ALUOp;
 	input		[5:0]	FuncCode;
 	output	reg	[3:0]	ALUCtl;
-	reg		[3:0]	ALUOpNext;
-/*
-	always @ (FuncCode)	begin
-		case(FuncCode)
-			32: ALUOpNext <= 2;		// ADD
-			34: ALUOpNext <= 6;		// SUBSTRACT
-			36: ALUOpNext <= 0;		// AND
-			37: ALUOpNext <= 1;		// OR
-			39: ALUOpNext <= 12;		// NOR
-			42: ALUOpNext <= 7;		// SLT (Set Less Than)
-			default: ALUOpNext <= 15;	// Not happened
-		endcase
-	end
-*/
+
 	always @(*)	begin
 		case(ALUOp)	
 			2 :case(FuncCode)
@@ -238,11 +225,7 @@ module ALUControl(ALUOp,FuncCode,ALUCtl);
 			0 : ALUCtl <= 2;	// for lw/sw
 		endcase
 	end
-/*
-	always @ (ALUOpNext)	begin
-		ALUCtl <= ALUOpNext;
-	end
-*/
+
 endmodule
 
 // MIPS ALU
@@ -312,7 +295,7 @@ module SIGN_EXTENSION(signExtIn,signExtOut);
 initial begin
 	signExtOut	= 32'h0;
 end
-always @ (signExtIn) begin
+always @ (*) begin
 	signExtOut <= ~signExtIn + 1;
 end
 endmodule
@@ -325,7 +308,7 @@ module MUX0(ReadReg2,WriteReg0,RegDst,WriteReg);
 initial begin
 	WriteReg	<=	4'h0;
 end
-always @ (RegDst)	begin
+always @ (*)	begin
 	case(RegDst)
 		0 :	WriteReg <=	ReadReg2;
 		1 :	WriteReg <=	WriteReg0;
@@ -342,7 +325,7 @@ module MUX1(ReadData2,signExtOut,ALUSrc,B);
 initial begin
 	B	=	32'h0;
 end
-always @ (ALUSrc)	begin
+always @ (*)	begin
 	case(ALUSrc)
 		0 :	B	<=	ReadData2;
 		1 :	B	<=	signExtOut;
@@ -358,7 +341,7 @@ module MUX2(ReadData3,ALUOut,WriteData,MemtoReg);
 initial begin
 	WriteData	<=	32'h0;
 end
-always @ (MemtoReg)	begin
+always @ (*)	begin
 	case(MemtoReg)
 		0 :	WriteData	<=	ReadData3;
 		1 :	WriteData	<=	ALUOut;
