@@ -109,18 +109,20 @@ initial begin
 	memReg[29] = 8'b10011111;
 	memReg[30] = 8'b00000000;
 	memReg[31] = 8'b00001000;
-
-	//beq 
-	memReg[32] = 8'b00100010;
-	memReg[33] = 8'b11111000;
-	memReg[34] = 8'b00000000;
-	memReg[35] = 8'b00001010;
 	
 	//bneq
-	memReg[36] = 8'b00100011;
-	memReg[37] = 8'b00011001;
+	memReg[32] = 8'b00100011;
+	memReg[33] = 8'b00011001;
+	memReg[34] = 8'b00000000;
+	memReg[35] = 8'b00001010;
+
+	//beq 
+	memReg[36] = 8'b00100010;
+	memReg[37] = 8'b11111000;
 	memReg[38] = 8'b00000000;
 	memReg[39] = 8'b00001010;
+	
+
 	
 end
 	always @ (PC_out) begin
