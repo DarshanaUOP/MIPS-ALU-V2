@@ -486,10 +486,10 @@ initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
 	//RegWrite= 0;
-	/*	
-	#90	RESET	= 1;
+	
+	#10	RESET	= 1;
 	#5	RESET	= 0;
-	*/
+	
 end
 
 always begin
