@@ -349,9 +349,9 @@ end
 endmodule
 
 //mux3 switch PC value in Branch Instructions;
-module MUX3(BAOut,PCAOut,Branch);
+module MUX3(BAOut,PCAOut,Branch,PC_in);
 	input		[31:0]	PCAOut,BAOut;
-	input	reg		Branch;
+	input			Branch;
 	output	reg	[31:0]	PC_in;
 initial begin
 	PC_in	=	32'h0;
@@ -478,6 +478,7 @@ module tb_MIPSALU2();
 	MUX0			MUX0	(ReadReg2,WriteReg0,RegDst,WriteReg);
 	MUX1			MUX1	(ReadData2,signExtOut,ALUSrc,B);
 	MUX2			MUX2	(ReadData3,ALUOut,WriteData,MemtoReg);
+	MUX3			MUX3	(BAOut,PCAOut,Branch);
 	DATAMEM			DATAMEM	(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
 	SHIFTER			SHFT	(shiftOut,signExtOut);
 	BRANCH_ADDER		BAD	(shiftOut,PCAOut,BAOut);
