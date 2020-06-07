@@ -121,7 +121,7 @@ initial begin
 	memReg[36] = 8'b00100010;
 	memReg[37] = 8'b11111000;
 	memReg[38] = 8'b00000000;
-	memReg[39] = 8'b00000010; // go PC for 2 Instructions back
+	memReg[39] = 8'b00000011; // go PC for 3 Instructions back
 
 end
 	always @ (PC_out) begin
