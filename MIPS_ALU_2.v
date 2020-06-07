@@ -453,7 +453,7 @@ endmodule
 //test bench
 module tb_MIPSALU2();
 	reg	CLK	=	1;
-	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B,ALUOut,ReadData2,ReadData3;
+	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B,ALUOut,ReadData2,ReadData3,PCAOut,BAOut;
 	reg		RESET;
 	wire	[4:0]	ReadReg1,ReadReg2,WriteReg,WriteReg0;
 	wire	[5:0]	FuncCode;
@@ -478,7 +478,7 @@ module tb_MIPSALU2();
 	MUX0			MUX0	(ReadReg2,WriteReg0,RegDst,WriteReg);
 	MUX1			MUX1	(ReadData2,signExtOut,ALUSrc,B);
 	MUX2			MUX2	(ReadData3,ALUOut,WriteData,MemtoReg);
-	MUX3			MUX3	(BAOut,PCAOut,Branch);
+	MUX3			MUX3	(BAOut,PCAOut,Branch,PC_in);
 	DATAMEM			DATAMEM	(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
 	SHIFTER			SHFT	(shiftOut,signExtOut);
 	BRANCH_ADDER		BAD	(shiftOut,PCAOut,BAOut);
