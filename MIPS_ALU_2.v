@@ -299,6 +299,9 @@ always @ (opcode)	begin
 	
 end
 
+always @ (Zero) begin
+	assign	Branch = Branch & Zero;
+end
 endmodule
 
 
