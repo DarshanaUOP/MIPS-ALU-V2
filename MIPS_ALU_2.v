@@ -109,6 +109,19 @@ initial begin
 	memReg[29] = 8'b10011111;
 	memReg[30] = 8'b00000000;
 	memReg[31] = 8'b00001000;
+
+	//beq 
+	memReg[32] = 8'b00100010;
+	memReg[33] = 8'b11111000;
+	memReg[34] = 8'b00000000;
+	memReg[35] = 8'b00001010;
+	
+	//bneq
+	memReg[36] = 8'b00100011;
+	memReg[37] = 8'b00011001;
+	memReg[38] = 8'b00000000;
+	memReg[39] = 8'b00001010;
+	
 end
 	always @ (PC_out) begin
 		//memReg[PC_out] = memReg[PC_out] + 8'h1;
@@ -184,9 +197,9 @@ initial begin
 	REGS[20]	=	32'hf;
 	REGS[21]	=	32'h0;
 	REGS[22]	=	32'h0;
-	REGS[23]	=	32'h0;
-	REGS[24]	=	32'h0;
-	REGS[25]	=	32'h0;
+	REGS[23]	=	32'ha;	//for branch equal
+	REGS[24]	=	32'ha;	//for branch equal
+	REGS[25]	=	32'hb;	//for branch not-equal
 	REGS[26]	=	32'h0;
 	REGS[27]	=	32'h0;
 	REGS[28]	=	32'hc;	//for store
@@ -250,8 +263,9 @@ endmodule
 
 
 //central controller
-module CONTROL(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite);
+module CONTROL(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite,Zero);
 	input	[5:0]	opcode;
+	input		Zero;
 	output	reg	[1:0]	ALUOp;
 	output	reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite;
 	reg	[8:0]	outputCode;
@@ -263,7 +277,7 @@ end
 outputCode format :
 [RegDst,ALUSrc,MemtoReg,RegWrite,MemRead,MemWrite,Branch,ALUOp1,ALUOp0]
 */
-always @ (*)	begin
+always @ (opcode)	begin
 	case(opcode)
 		//dont cares has implemented as zero	
 		0 :	outputCode	<= 	9'b100100010;	//R-Type
@@ -284,6 +298,7 @@ always @ (*)	begin
 	ALUOp		<=	outputCode[1:0];
 	
 end
+
 endmodule
 
 
@@ -407,7 +422,7 @@ module tb_MIPSALU2();
 	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,ReadData2);
 	ALUControl		ALUCNTL	(ALUOp,FuncCode,ALUCtl);
 	MIPSALU			ALU	(ALUCtl,A,B,ALUOut,Zero);
-	CONTROL			CTRL	(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite);
+	CONTROL			CTRL	(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite,Zero);
 	SIGN_EXTENSION		SIGNEXT	(signExtIn,signExtOut);
 	MUX0			MUX0	(ReadReg2,WriteReg0,RegDst,WriteReg);
 	MUX1			MUX1	(ReadData2,signExtOut,ALUSrc,B);
@@ -417,8 +432,10 @@ initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
 	//RegWrite= 0;
+	/*	
 	#90	RESET	= 1;
 	#5	RESET	= 0;
+	*/
 end
 
 always begin
