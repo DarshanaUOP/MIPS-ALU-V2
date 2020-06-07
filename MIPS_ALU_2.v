@@ -320,6 +320,20 @@ always @ (*) begin
 	signExtOut <= ~signExtIn + 1;
 end
 endmodule
+
+module SHIFTER(shiftOut,signExtOut);
+	input		[31:0]	signExtOut;
+	output	reg	[31:0]	shiftOut;
+initial begin
+	shiftOut	=	32'h0;
+end
+
+always @ (*)	begin
+	shiftOut	<=	signExtOut*4;
+end
+
+endmodule
+
 //mux0 switch instruction[20:16] and  instruction[20:16] to write register
 module MUX0(ReadReg2,WriteReg0,RegDst,WriteReg);
 	input	[4:0]	ReadReg2;
@@ -420,7 +434,7 @@ module tb_MIPSALU2();
 	wire	[5:0]	opcode;
 	wire		RegWrite,RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc;
 	wire	[15:0]	signExtIn;
-	wire	[31:0]	signExtOut;
+	wire	[31:0]	signExtOut,shiftOut;
 
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PC_in,PC_out);
@@ -435,6 +449,7 @@ module tb_MIPSALU2();
 	MUX1			MUX1	(ReadData2,signExtOut,ALUSrc,B);
 	MUX2			MUX2	(ReadData3,ALUOut,WriteData,MemtoReg);
 	DATAMEM			DATAMEM	(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
+	SHIFTER			SHFT	(shiftOut,signExtOut);
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
