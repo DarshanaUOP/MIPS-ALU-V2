@@ -22,17 +22,18 @@ end
 endmodule
 
 //program counter adder
-module PC_ADDER(PC_in,PC_out);
+module PC_ADDER(PCAOut,PC_out);
 	input		[31:0]	PC_out;
-	output 	reg 	[31:0]	PC_in;
+	output 	reg 	[31:0]	PCAOut;
 	//input	CLK;
 	reg	[31:0]	PC_next;
 initial begin
-	PC_in = 32'h0;
+	PCAOut = 32'h0;
 end
 
 always @ (PC_out)	begin
-	PC_in	<= PC_out + 4;	
+	//PC_in	<= PC_out + 4;	
+	PCAOut	<=	PC_out + 4;
 end
 endmodule
 
@@ -114,16 +115,14 @@ initial begin
 	memReg[32] = 8'b00100011;
 	memReg[33] = 8'b00011001;
 	memReg[34] = 8'b00000000;
-	memReg[35] = 8'b00001010;
+	memReg[35] = 8'b00000010;
 
 	//beq 
 	memReg[36] = 8'b00100010;
 	memReg[37] = 8'b11111000;
 	memReg[38] = 8'b00000000;
-	memReg[39] = 8'b00001010;
-	
+	memReg[39] = 8'b00000010; // go PC for 2 Instructions back
 
-	
 end
 	always @ (PC_out) begin
 		//memReg[PC_out] = memReg[PC_out] + 8'h1;
@@ -323,6 +322,7 @@ always @ (*) begin
 end
 endmodule
 
+// shifter
 module SHIFTER(shiftOut,signExtOut);
 	input		[31:0]	signExtOut;
 	output	reg	[31:0]	shiftOut;
@@ -333,8 +333,22 @@ end
 always @ (*)	begin
 	shiftOut	<=	signExtOut*4;
 end
-
 endmodule
+
+// branch adder
+module 	BRANCH_ADDER(shiftOut,PCAOut,BAOut);
+	input		[31:0]	PCAOut,shiftOut;
+	output	reg	[31:0]	BAOut;
+initial begin
+	BAOut	=	32'h0;
+end
+
+always @ (*) begin
+	BAOut	<=	PCAOut + shiftOut;
+end
+endmodule
+
+
 
 //mux0 switch instruction[20:16] and  instruction[20:16] to write register
 module MUX0(ReadReg2,WriteReg0,RegDst,WriteReg);
@@ -439,7 +453,7 @@ module tb_MIPSALU2();
 	wire	[31:0]	signExtOut,shiftOut;
 
 	PC			PC	(PC_in,PC_out,RESET,CLK);
-	PC_ADDER		PA	(PC_in,PC_out);
+	PC_ADDER		PA	(PCAOut,PC_out);
 	INSTRUCTION_MEMORY 	IM	(PC_out,INSTRUCTION);
 	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg0,FuncCode,opcode,signExtIn);
 	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,ReadData2);
@@ -452,6 +466,7 @@ module tb_MIPSALU2();
 	MUX2			MUX2	(ReadData3,ALUOut,WriteData,MemtoReg);
 	DATAMEM			DATAMEM	(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
 	SHIFTER			SHFT	(shiftOut,signExtOut);
+	BRANCH_ADDER		BAD	(shiftOut,PCAOut,BAOut);
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
