@@ -234,6 +234,7 @@ module ALUControl(ALUOp,FuncCode,ALUCtl);
 				42: ALUCtl <= 7;		// SLT (Set Less Than)
 				default: ALUCtl <= 15;	// Not happened
 			endcase
+			1 : ALUCtl <= 6;	//for branch instructions
 			0 : ALUCtl <= 2;	// for lw/sw
 		endcase
 	end
@@ -269,6 +270,7 @@ module CONTROL(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWr
 	output	reg	[1:0]	ALUOp;
 	output	reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite;
 	reg	[8:0]	outputCode;
+	reg	BranchInt;
 
 initial begin
 	outputCode = 9'h0;
@@ -277,14 +279,14 @@ end
 outputCode format :
 [RegDst,ALUSrc,MemtoReg,RegWrite,MemRead,MemWrite,Branch,ALUOp1,ALUOp0]
 */
-always @ (opcode)	begin
+always @ (*)	begin
 	case(opcode)
 		//dont cares has implemented as zero	
 		0 :	outputCode	<= 	9'b100100010;	//R-Type
 		35: 	outputCode	<= 	9'b011110000;	//load word
 		43:	outputCode	<= 	9'b010001000;	//store word
 		8 :	outputCode	<= 	9'b000000101;
-		default: outputCode	<= 	9'b100100010;	//R-Type	//default 
+		//default: outputCode	<= 	9'b100100010;	//R-Type	//default 
 	endcase
 	
 	//assign to output registers
@@ -294,14 +296,16 @@ always @ (opcode)	begin
 	RegWrite	=	outputCode[5];
 	MemRead		=	outputCode[4];
 	MemWrite	=	outputCode[3];
-	Branch		=	outputCode[2];
+	BranchInt	=	outputCode[2];
 	ALUOp		<=	outputCode[1:0];
 	
+	assign	Branch = BranchInt & Zero;
 end
-
+/*
 always @ (Zero) begin
-	assign	Branch = Branch & Zero;
+	
 end
+*/
 endmodule
 
 
