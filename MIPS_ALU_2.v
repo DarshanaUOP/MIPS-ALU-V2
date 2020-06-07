@@ -7,33 +7,32 @@ module PC(PC_in,PC_out,RESET,CLK);
 	input		[31:0]	PC_in;
 	output	reg	[31:0]	PC_out;
 	input		RESET,CLK;
-
+/*
 initial begin
 	PC_out 	= 32'h0;
 end
-
+*/
 always @ (RESET)	begin
 	PC_out	<=	32'h0;
 end
 
 always @ (negedge CLK) begin
-	PC_out	= PC_in;
+	PC_out	<= PC_in;
 end
 endmodule
 
 //program counter adder
-module PC_ADDER(PC_in,PC_out,CLK);
+module PC_ADDER(PC_in,PC_out);
 	input		[31:0]	PC_out;
 	output 	reg 	[31:0]	PC_in;
-	input	CLK;
+	//input	CLK;
 	reg	[31:0]	PC_next;
-
 initial begin
 	PC_in = 32'h0;
 end
 
-always @ (posedge CLK)	begin
-	PC_in	= PC_out + 4;	
+always @ (PC_out)	begin
+	PC_in	<= PC_out + 4;	
 end
 endmodule
 
@@ -387,7 +386,7 @@ end
 endmodule
 //test bench
 module tb_MIPSALU2();
-	reg	CLK	=	0;
+	reg	CLK	=	1;
 	wire	[31:0]	PC_in,PC_out,INSTRUCTION,WriteData,A,B,ALUOut,ReadData2,ReadData3;
 	reg		RESET;
 	wire	[4:0]	ReadReg1,ReadReg2,WriteReg,WriteReg0;
@@ -402,7 +401,7 @@ module tb_MIPSALU2();
 	wire	[31:0]	signExtOut;
 
 	PC			PC	(PC_in,PC_out,RESET,CLK);
-	PC_ADDER		PA	(PC_in,PC_out,CLK);
+	PC_ADDER		PA	(PC_in,PC_out);
 	INSTRUCTION_MEMORY 	IM	(PC_out,INSTRUCTION);
 	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg0,FuncCode,opcode,signExtIn);
 	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,ReadData2);
