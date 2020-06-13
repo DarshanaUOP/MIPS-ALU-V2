@@ -265,11 +265,11 @@ endmodule
 
 
 //central controller
-module CONTROL(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite,Zero);
+module CONTROL(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite,Zero,Jump);
 	input	[5:0]	opcode;
 	input		Zero;
 	output	reg	[1:0]	ALUOp;
-	output	reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite;
+	output	reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite,Jump;
 	reg	[8:0]	outputCode;
 	reg	BranchInt;
 
@@ -462,7 +462,7 @@ module tb_MIPSALU2();
 	wire		Zero;
 
 	wire	[5:0]	opcode;
-	wire		RegWrite,RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc;
+	wire		RegWrite,RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,Jump;
 	wire	[15:0]	signExtIn;
 	wire	[31:0]	signExtOut,shiftOut;
 
@@ -473,7 +473,7 @@ module tb_MIPSALU2();
 	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,ReadData2);
 	ALUControl		ALUCNTL	(ALUOp,FuncCode,ALUCtl);
 	MIPSALU			ALU	(ALUCtl,A,B,ALUOut,Zero);
-	CONTROL			CTRL	(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite,Zero);
+	CONTROL			CTRL	(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite,Zero,Jump);
 	SIGN_EXTENSION		SIGNEXT	(signExtIn,signExtOut);
 	MUX0			MUX0	(ReadReg2,WriteReg0,RegDst,WriteReg);
 	MUX1			MUX1	(ReadData2,signExtOut,ALUSrc,B);
