@@ -135,12 +135,13 @@ end
 endmodule
 
 // instruction register
-module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg0,FuncCode,opcode,signExtIn);
+module INSTRUCTION_REGISTER(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg0,FuncCode,opcode,signExtIn,JumpINS);
 	input	[31:0]	INSTRUCTION;
 	input		CLK;
 	output	reg	[4:0]	ReadReg1,ReadReg2,WriteReg0;
 	output	reg	[5:0]	FuncCode,opcode;
 	output	reg	[15:0]	signExtIn;
+	output	reg	[25:0]	JumpINS;
 	reg	[31:0]	CurrentINS;
 initial begin
 	ReadReg1	=	5'h0;
@@ -158,6 +159,7 @@ always @ (posedge	CLK) begin
 	FuncCode	<=	INSTRUCTION[5:0];
 	opcode		<=	INSTRUCTION[31:26];
 	signExtIn	<=	INSTRUCTION[15:0];	
+	JumpINS		<=	INSTRUCTION[25:0];	
 end
 endmodule
 
@@ -414,6 +416,24 @@ always @(*) begin
 		1 : PC_in0	<=	BAOut;	//branch instruction
 	endcase
 end
+endmodule
+
+//SHIFTER JUMP INSTRUCTION
+module SHIFT_JUMP(JumpINS,PCAOut,ShiftedJumpOut);
+	input		[25:0]	JumpINS;
+	input		[31:0]	PCAOut;
+	output	reg	[31:0]	ShiftedJumpOut;
+
+initial	begin
+	ShiftedJumpOut	<=	32'h0;
+end
+
+always @ (*)	begin
+	ShiftedJumpOut[1:0]	<=	2'b00;	
+	ShiftedJumpOut[27:2]	<=	JumpINS*4;
+	ShiftedJumpOut[31:28]	<=	PCAOut[31:28];
+end
+
 endmodule
 
 //Data Memory
