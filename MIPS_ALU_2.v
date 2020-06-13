@@ -123,6 +123,24 @@ initial begin
 	memReg[38] = 8'b00000000;
 	memReg[39] = 8'b00000011; // go PC for 3 Instructions back
 
+	//Jump 
+	memReg[40] = 8'b00001000;
+	memReg[41] = 8'b00000000;
+	memReg[42] = 8'b00000000;
+	memReg[43] = 8'b00000010; // jump to memreg[48]
+
+	//ADD	
+	memReg[44] = 8'b00000000; //8'h0; 
+	memReg[45] = 8'b00000001;
+	memReg[46] = 8'b00010000;
+	memReg[47] = 8'b00100000;
+	
+	//ADD	
+	memReg[48] = 8'b00000000; //8'h0; 
+	memReg[49] = 8'b00000001;
+	memReg[50] = 8'b00010000;
+	memReg[51] = 8'b00100000;
+
 end
 	always @ (PC_out) begin
 		//memReg[PC_out] = memReg[PC_out] + 8'h1;
