@@ -272,11 +272,11 @@ module CONTROL(opcode,RegDst,Branch,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWr
 	input		Zero;
 	output	reg	[1:0]	ALUOp;
 	output	reg	RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,RegWrite,Jump;
-	reg	[8:0]	outputCode;
+	reg	[9:0]	outputCode;
 	reg	BranchInt;
 
 initial begin
-	outputCode = 9'h0;
+	outputCode = 10'h0;
 end
 /*
 outputCode format :
@@ -285,14 +285,16 @@ outputCode format :
 always @ (*)	begin
 	case(opcode)
 		//dont cares has implemented as zero	
-		0 :	outputCode	<= 	9'b100100010;	//R-Type
-		35: 	outputCode	<= 	9'b011110000;	//load word
-		43:	outputCode	<= 	9'b010001000;	//store word
-		8 :	outputCode	<= 	9'b000000101;
+		0 :	outputCode	<= 	10'b0100100010;	//R-Type
+		35: 	outputCode	<= 	10'b0011110000;	//load word
+		43:	outputCode	<= 	10'b0010001000;	//store word
+		8 :	outputCode	<= 	10'b0000000101;	//beq
+		2 :	outputCode	<=	10'b1000000000;	//Jump 
 		//default: outputCode	<= 	9'b100100010;	//R-Type	//default 
 	endcase
 	
 	//assign to output registers
+	Jump		=	outputCode[9];
 	RegDst		=	outputCode[8];
 	ALUSrc		=	outputCode[7];
 	MemtoReg	=	outputCode[6];
@@ -423,6 +425,7 @@ module MUX4(ShiftedJumpOut,PC_in0,Jump,PC_in);
 	input		[31:0]	ShiftedJumpOut,PC_in0;
 	input			Jump;
 	output	reg	[31:0]	PC_in;
+
 initial begin
 	PC_in	=	32'h0;
 end
