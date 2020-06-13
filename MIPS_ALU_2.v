@@ -111,23 +111,36 @@ initial begin
 	memReg[30] = 8'b00000000;
 	memReg[31] = 8'b00001000;
 	
-	//bneq
-	memReg[32] = 8'b00100011;
-	memReg[33] = 8'b00011001;
+	//Jump 
+	memReg[32] = 8'b00001000;
+	memReg[33] = 8'b00000000;
 	memReg[34] = 8'b00000000;
-	memReg[35] = 8'b00000010;
+	memReg[35] = 8'b00000011; // jump to memreg[48]
+
+	//ADD 
+	memReg[44] = 8'b00000000; //8'h8; 
+	memReg[45] = 8'b00000001;
+	memReg[46] = 8'b00010000;
+	memReg[47] = 8'b00100000;
+
+	//bneq
+	memReg[48] = 8'b00100011;
+	memReg[49] = 8'b00011001;
+	memReg[50] = 8'b00000000;
+	memReg[51] = 8'b00000010;
 
 	//beq 
-	memReg[36] = 8'b00100010;
-	memReg[37] = 8'b11111000;
-	memReg[38] = 8'b00000000;
-	memReg[39] = 8'b00000011; // go PC for 3 Instructions back
-
+	memReg[52] = 8'b00100010;
+	memReg[53] = 8'b11111000;
+	memReg[54] = 8'b00000000;
+	memReg[55] = 8'b00000011; // go PC for 3 Instructions back
+/*
 	//Jump 
 	memReg[40] = 8'b00001000;
 	memReg[41] = 8'b00000000;
 	memReg[42] = 8'b00000000;
 	memReg[43] = 8'b00000010; // jump to memreg[48]
+
 
 	//ADD	
 	memReg[44] = 8'b00000000; //8'h0; 
@@ -140,7 +153,7 @@ initial begin
 	memReg[49] = 8'b00000001;
 	memReg[50] = 8'b00010000;
 	memReg[51] = 8'b00100000;
-
+*/
 end
 	always @ (PC_out) begin
 		//memReg[PC_out] = memReg[PC_out] + 8'h1;
@@ -525,11 +538,12 @@ module tb_MIPSALU2();
 	wire		RegWrite,RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,Jump;
 	wire	[15:0]	signExtIn;
 	wire	[31:0]	signExtOut,shiftOut,ShiftedJumpOut;
+	wire	[25:0]	JumpINS;
 
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PCAOut,PC_out);
 	INSTRUCTION_MEMORY 	IM	(PC_out,INSTRUCTION);
-	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg0,FuncCode,opcode,signExtIn);
+	INSTRUCTION_REGISTER	IR	(INSTRUCTION,CLK,ReadReg1,ReadReg2,WriteReg0,FuncCode,opcode,signExtIn,JumpINS);
 	REGISTERS		REGFILE	(ReadReg1,ReadReg2,WriteReg,WriteData,RegWrite,CLK,A,ReadData2);
 	ALUControl		ALUCNTL	(ALUOp,FuncCode,ALUCtl);
 	MIPSALU			ALU	(ALUCtl,A,B,ALUOut,Zero);
@@ -539,6 +553,7 @@ module tb_MIPSALU2();
 	MUX1			MUX1	(ReadData2,signExtOut,ALUSrc,B);
 	MUX2			MUX2	(ReadData3,ALUOut,WriteData,MemtoReg);
 	MUX3			MUX3	(BAOut,PCAOut,Branch,PC_in0);
+	MUX4			MUX4	(ShiftedJumpOut,PC_in0,Jump,PC_in);
 	DATAMEM			DATAMEM	(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
 	SHIFTER			SHFT	(shiftOut,signExtOut);
 	BRANCH_ADDER		BAD	(shiftOut,PCAOut,BAOut);
