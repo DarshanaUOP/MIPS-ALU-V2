@@ -348,21 +348,6 @@ always @ (*) begin
 end
 endmodule
 
-//mux3 switch PC value in Branch Instructions;
-module MUX3(BAOut,PCAOut,Branch,PC_in0);
-	input		[31:0]	PCAOut,BAOut;
-	input			Branch;
-	output	reg	[31:0]	PC_in0;
-initial begin
-	PC_in0	=	32'h0;
-end
-always @(*) begin
-	case(Branch)
-		0 : PC_in0	<=	PCAOut;	//normal instruction
-		1 : PC_in0	<=	BAOut;	//branch instruction
-	endcase
-end
-endmodule
 
 //mux0 switch instruction[20:16] and  instruction[20:16] to write register
 module MUX0(ReadReg2,WriteReg0,RegDst,WriteReg);
@@ -413,6 +398,22 @@ always @ (*)	begin
 	endcase
 end	
 	
+endmodule
+
+//mux3 switch PC value in Branch Instructions;
+module MUX3(BAOut,PCAOut,Branch,PC_in0);
+	input		[31:0]	PCAOut,BAOut;
+	input			Branch;
+	output	reg	[31:0]	PC_in0;
+initial begin
+	PC_in0	=	32'h0;
+end
+always @(*) begin
+	case(Branch)
+		0 : PC_in0	<=	PCAOut;	//normal instruction
+		1 : PC_in0	<=	BAOut;	//branch instruction
+	endcase
+end
 endmodule
 
 //Data Memory
