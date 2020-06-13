@@ -418,6 +418,24 @@ always @(*) begin
 end
 endmodule
 
+//MUX4 for switch PC_in between shiftPCOut and PC_in0
+module MUX4(ShiftedJumpOut,PC_in0,Jump,PC_in);
+	input		[31:0]	ShiftedJumpOut,PC_in0;
+	input			Jump;
+	output	reg	[31:0]	PC_in;
+initial begin
+	PC_in	=	32'h0;
+end
+
+always	@ (*)	begin
+	case(Jump)
+		0:PC_in	<=	PC_in0;
+		1:PC_in	<=	ShiftedJumpOut;
+	endcase
+end
+
+endmodule
+
 //SHIFTER JUMP INSTRUCTION
 module SHIFT_JUMP(JumpINS,PCAOut,ShiftedJumpOut);
 	input		[25:0]	JumpINS;
@@ -485,7 +503,7 @@ module tb_MIPSALU2();
 	wire	[5:0]	opcode;
 	wire		RegWrite,RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,Jump;
 	wire	[15:0]	signExtIn;
-	wire	[31:0]	signExtOut,shiftOut;
+	wire	[31:0]	signExtOut,shiftOut,ShiftedJumpOut;
 
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PCAOut,PC_out);
@@ -503,6 +521,7 @@ module tb_MIPSALU2();
 	DATAMEM			DATAMEM	(ALUOut,ReadData2,ReadData3,MemWrite,MemRead);
 	SHIFTER			SHFT	(shiftOut,signExtOut);
 	BRANCH_ADDER		BAD	(shiftOut,PCAOut,BAOut);
+	SHIFT_JUMP		SHIFTJMP(JumpINS,PCAOut,ShiftedJumpOut);
 initial begin
 	//PC_in = 32'h0;
 	RESET	= 0;
