@@ -537,9 +537,10 @@ module tb_MIPSALU2();
 	wire	[5:0]	opcode;
 	wire		RegWrite,RegDst,Branch,MemRead,MemtoReg,MemWrite,ALUSrc,Jump;
 	wire	[15:0]	signExtIn;
-	wire	[31:0]	signExtOut,shiftOut,ShiftedJumpOut;
+	wire	[31:0]	ShiftedJumpOut;
 	wire	[25:0]	JumpINS;
-
+	wire	[31:0]	signExtOut,shiftOut;
+	
 	PC			PC	(PC_in,PC_out,RESET,CLK);
 	PC_ADDER		PA	(PCAOut,PC_out);
 	INSTRUCTION_MEMORY 	IM	(PC_out,INSTRUCTION);
