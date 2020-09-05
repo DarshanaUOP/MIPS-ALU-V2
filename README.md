@@ -6,3 +6,4 @@ MIPS ALU with PC (Program Counter) , Instruction memory and Data Memory. It can 
 Following figure shows that part of the DataFlow Diagrem of the Design and run it with your ModelSim PE 
 <br>
 <img src="dataflow.JPG" width=100%>
+*Figure - Data Flow diagram*
